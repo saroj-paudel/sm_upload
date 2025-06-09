@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_translation('about') }} - {{ get_translation('title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="text-center mb-5">{{ get_translation('about_title') }}</h2>
+
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ get_translation('about_mission') }}</h5>
+                    <p class="card-text">
+                        {{ get_translation('about_mission_text') }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ get_translation('about_technology') }}</h5>
+                    <p class="card-text">
+                        {{ get_translation('about_technology_text') }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ get_translation('plant_category') }}</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>{{ get_translation('soil_crops') }}:</strong> {{ get_translation('soil_crops_desc') }}</li>
+                        <li class="list-group-item"><strong>{{ get_translation('tree_fruits') }}:</strong> {{ get_translation('tree_fruits_desc') }}</li>
+                        <li class="list-group-item"><strong>{{ get_translation('leafy_vegetables') }}:</strong> {{ get_translation('leafy_vegetables_desc') }}</li>
+                        <li class="list-group-item"><strong>{{ get_translation('cereals') }}:</strong> {{ get_translation('cereals_desc') }}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">{{ get_translation('about_team') }}</h5>
+                    <p class="card-text">
+                        {{ get_translation('about_team_text') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

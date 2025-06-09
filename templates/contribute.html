@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-center mb-5">
+                <h1>{{ get_translation('contribute_title') }}</h1>
+                <p class="lead">{{ get_translation('contribute_description') }}</p>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">{{ get_translation('contribute_why') }}</h5>
+                            <p class="card-text">{{ get_translation('contribute_why_text') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">{{ get_translation('contribute_guidelines') }}</h5>
+                            <div class="card-text">
+                                <p>{{ get_translation('contribute_guideline_1') }}</p>
+                                <p>{{ get_translation('contribute_guideline_2') }}</p>
+                                <p>{{ get_translation('contribute_guideline_3') }}</p>
+                                <p>{{ get_translation('contribute_guideline_4') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="contributionForm" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="categorySelect" class="form-label">{{ get_translation('plant_category') }} *</label>
+                                <select class="form-select" id="categorySelect" name="category" required>
+                                    <option value="">{{ get_translation('select_plant_category') }}</option>
+                                    {% for category_id, category_info in categories.items() %}
+                                    <option value="{{ category_id }}">{{ get_translation(category_info.name_key) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="diseaseInput" class="form-label">{{ get_translation('disease_name') }} *</label>
+                                <input type="text" class="form-control" id="diseaseInput" name="disease" 
+                                       placeholder="{{ get_translation('enter_disease_name') }}" required>
+                                <div class="form-text">{{ get_translation('be_specific') }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="imageUpload" class="form-label">{{ get_translation('upload_plant_image') }} *</label>
+                            <input type="file" class="form-control" id="imageUpload" name="image" 
+                                   accept="image/*" required>
+                            <div class="form-text">{{ get_translation('supported_formats') }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contributorName" class="form-label">{{ get_translation('contributor_name') }}</label>
+                            <input type="text" class="form-control" id="contributorName" name="contributor_name" 
+                                   placeholder="{{ get_translation('enter_your_name') }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="notes" class="form-label">{{ get_translation('additional_notes') }}</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                      placeholder="{{ get_translation('additional_notes_placeholder') }}"></textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                {{ get_translation('submit_contribution') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div id="alertContainer" class="mt-4"></div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.getElementById('contributionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ get_translation("analyzing") }}';
+
+    fetch('/submit_contribution', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const alertContainer = document.getElementById('alertContainer');
+
+        if (data.success) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>${data.message}
+                    <br><small>{{ get_translation("contribute_title") }} ID: ${data.contribution_id}</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.getElementById('contributionForm').reset();
+        } else {
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>Error: ${data.error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+
+        // Scroll to alert
+        alertContainer.scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(error => {
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>Error: ${error.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        alertContainer.scrollIntoView({ behavior: 'smooth' });
+    })
+    .finally(() => {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_translation(category_info.name_key) }} - {{ get_translation('title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="mb-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-success">
+                    <i class="fas fa-arrow-left me-2"></i>{{ get_translation('back_to_categories') }}
+                </a>
+            </div>
+
+            <div class="text-center mb-5">
+                <h1>{{ get_translation('disease_detection') }}</h1>
+                <h3 class="text-success">{{ get_translation(category_info.name_key) }}</h3>
+                <p class="text-muted">{{ get_translation(category_info.desc_key) }}</p>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="diseaseDetectionForm" enctype="multipart/form-data">
+                        <input type="hidden" name="category" value="{{ category_name }}">
+
+                        <div class="mb-4">
+                            <label for="imageUpload" class="form-label">{{ get_translation('upload_plant_image') }}</label>
+                            <div class="upload-area border border-dashed border-success rounded p-4 text-center" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-success mb-3"></i>
+                                <p class="mb-2">{{ get_translation('drag_drop') }}</p>
+                                <input type="file" class="form-control d-none" id="imageUpload" name="image" accept="image/*" required>
+                                <button type="button" class="btn btn-outline-success" onclick="document.getElementById('imageUpload').click()">
+                                    {{ get_translation('select_category') }}
+                                </button>
+                                <small class="d-block text-muted mt-2">{{ get_translation('supported_formats') }}</small>
+                            </div>
+                        </div>
+
+                        <div id="selectedFile" class="mb-3" style="display: none;">
+                            <strong>{{ get_translation('file_selected') }}</strong> <span id="fileName"></span>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mb-3" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">{{ get_translation('image_preview') }}</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <img id="previewImg" src="" alt="Preview" class="img-fluid" style="max-height: 300px; border-radius: 8px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg" id="analyzeBtn">
+                                {{ get_translation('analyze_image') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading state -->
+            <div id="loadingState" class="card shadow-sm mt-4" style="display: none;">
+                <div class="card-body text-center py-5">
+                    <div class="spinner-border text-success mb-3" role="status"></div>
+                    <h5>{{ get_translation('analyzing') }}</h5>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="resultsCard" class="card shadow-sm mt-4" style="display: none;">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">{{ get_translation('analysis_results') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>{{ get_translation('detected_disease') }}:</strong>
+                            <span id="detectedDisease" class="text-success"></span>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <strong>{{ get_translation('confidence') }}:</strong>
+                            <span id="confidence"></span>%
+                        </div>
+                        <div class="col-md-3 mb-3 d-none">
+                            <strong>{{ get_translation('severity') }}:</strong>
+                            <span id="severity"></span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6>{{ get_translation('treatment_recommendations') }}:</h6>
+                        <div id="treatment" class="alert alert-info"></div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-primary" id="solutionBtn" onclick="fetchSolution()">
+                            {{ get_translation('solution') if get_translation('solution') else 'Solution' }}
+                        </button>
+                    </div>
+                    <div id="solutionResult" class="alert alert-success mt-3" style="display:none;"></div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-success" onclick="resetForm()">
+                            {{ get_translation('try_another') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h5>{{ get_translation('common_diseases') }} {{ get_translation(category_info.name_key) }}:</h5>
+                <div class="row">
+                    {% for disease in category_info.diseases %}
+                    <div class="col-md-6 mb-2">
+                        <span class="badge bg-secondary">{{ disease }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('selectedFile').style.display = 'block';
+        
+        // Show image preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+document.getElementById('diseaseDetectionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    // Show loading state
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('resultsCard').style.display = 'none';
+
+    fetch('/detect', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (data.success) {
+            // Show results
+            document.getElementById('detectedDisease').textContent = data.prediction.disease;
+            document.getElementById('confidence').textContent = Math.round(data.prediction.confidence * 100);
+            document.getElementById('severity').textContent = data.prediction.severity;
+            document.getElementById('treatment').textContent = data.prediction.treatment;
+            document.getElementById('resultsCard').style.display = 'block';
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        document.getElementById('loadingState').style.display = 'none';
+        alert('Error: ' + error.message);
+    });
+});
+
+function resetForm() {
+    document.getElementById('diseaseDetectionForm').reset();
+    document.getElementById('selectedFile').style.display = 'none';
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('resultsCard').style.display = 'none';
+}
+
+// Drag and drop functionality
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('imageUpload');
+
+uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadArea.classList.add('border-primary');
+});
+
+uploadArea.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('border-primary');
+});
+
+uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('border-primary');
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        document.getElementById('fileName').textContent = files[0].name;
+        document.getElementById('selectedFile').style.display = 'block';
+        
+        // Show image preview for drag and drop
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(files[0]);
+    }
+});
+
+function fetchSolution() {
+    const disease = document.getElementById('detectedDisease').textContent;
+    if (!disease) {
+        alert('No disease detected.');
+        return;
+    }
+
+const apiUrl = "https://llm.plantvillage.psu.edu:8080/api/v2/ask?session_id=068410ed-9e80-7b6f-8000-bc069a4b0732";
+const pld = "question=" + encodeURIComponent("What is the organic and inorganic solution for " + disease + "?") + "&response_length=medium";
+// Show loading state for solution
+const solutionDiv = document.getElementById('solutionResult');
+solutionDiv.style.display = 'block';
+solutionDiv.textContent = 'Loading solution...';
+
+var xhr = new XMLHttpRequest();
+xhr.open("POST", apiUrl, true);
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if (data && data.response) {
+                    solutionDiv.textContent = data.response;
+                } else {
+                    solutionDiv.textContent = 'No solution found.';
+                }
+            } catch (e) {
+                solutionDiv.textContent = 'Error parsing solution.';
+            }
+        } else {
+            solutionDiv.textContent = 'Error fetching solution.';
+        }
+    }
+};
+xhr.send(pld);
+}
+</script>
+{% endblock %}

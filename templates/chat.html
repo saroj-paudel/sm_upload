@@ -1,0 +1,58 @@
+
+{% extends "base.html" %}
+
+{% block title %}AI Chat - SmartKishan{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center mb-4">
+                <h2>AI Plant Expert Chat</h2>
+                <p class="text-muted">Chat with our AI plant expert powered by PlantVillage for instant plant care advice</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-lg">
+                <div class="card-body p-0">
+                    <iframe 
+                        src="https://llm.plantvillage.psu.edu/" 
+                        width="100%" 
+                        height="700px" 
+                        frameborder="0"
+                        style="border-radius: 0.375rem;"
+                        title="PlantVillage AI Chat">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="alert alert-info">
+                <h5><i class="fas fa-info-circle"></i> How to use the AI Chat</h5>
+                <ul class="mb-0">
+                    <li>Ask questions about plant diseases, pests, and care</li>
+                    <li>Get instant expert advice from the PlantVillage AI</li>
+                    <li>Upload images directly in the chat for better diagnosis</li>
+                    <li>Receive treatment recommendations and prevention tips</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add any additional JavaScript for the chat page if needed
+document.addEventListener('DOMContentLoaded', function() {
+    // Optional: Add loading indicator or other functionality
+    console.log('AI Chat page loaded');
+});
+</script>
+{% endblock %}

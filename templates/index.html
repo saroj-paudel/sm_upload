@@ -1,0 +1,76 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section bg-success text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">{{ get_translation('title') }}</h1>
+        <p class="lead mb-4">{{ get_translation('subtitle') }}</p>
+        <p class="mb-4">{{ get_translation('description') }}</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="text-center mb-5">{{ get_translation('select_category') }}</h2>
+            <div class="row g-4">
+                {% for category_id, category_info in categories.items() %}
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm category-card">
+                        <div class="card-body text-center">
+                            <div class="category-icon mb-3">
+                                {% if category_id == 'soil_crops' %}
+                                    <i class="fas fa-seedling fa-3x text-success"></i>
+                                {% elif category_id == 'tree_fruits' %}
+                                    <i class="fas fa-tree fa-3x text-success"></i>
+                                {% elif category_id == 'leafy_vegetables' %}
+                                    <i class="fas fa-leaf fa-3x text-success"></i>
+                                {% else %}
+                                    <i class="fas fa-wheat-awn fa-3x text-success"></i>
+                                {% endif %}
+                            </div>
+                            <h5 class="card-title">{{ get_translation(category_info.name_key) }}</h5>
+                            <p class="card-text">{{ get_translation(category_info.desc_key) }}</p>
+                            <a href="{{ url_for('category_page', category_name=category_id) }}" 
+                               class="btn btn-success">{{ get_translation('detect_diseases') }}</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h2 class="text-center mb-5">{{ get_translation('how_it_works') }}</h2>
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-upload fa-3x text-success"></i>
+                    </div>
+                    <h5>{{ get_translation('upload_image') }}</h5>
+                    <p>{{ get_translation('upload_desc') }}</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-brain fa-3x text-success"></i>
+                    </div>
+                    <h5>{{ get_translation('ai_analysis') }}</h5>
+                    <p>{{ get_translation('ai_desc') }}</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-prescription-bottle-medical fa-3x text-success"></i>
+                    </div>
+                    <h5>{{ get_translation('get_treatment') }}</h5>
+                    <p>{{ get_translation('treatment_desc') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
