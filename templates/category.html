@@ -232,6 +232,7 @@ solutionDiv.textContent = 'Loading solution...';
 var xhr = new XMLHttpRequest();
 xhr.open("POST", apiUrl, true);
 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.setRequestHeader("Access-Control-Allow-Origin", "Origin, X-Requested-With, Content-Type, Accept");
 xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
         if (xhr.status === 200) {
