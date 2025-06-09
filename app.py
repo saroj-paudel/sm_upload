@@ -282,12 +282,13 @@ def index():
 def category_page(category_name):
     if category_name not in PLANT_CATEGORIES:
         return redirect(url_for('index'))
-
+    lng = get_language()
     category_info = PLANT_CATEGORIES[category_name]
     return render_template('category.html', 
                          category_name=category_name, 
                          category_info=category_info,
-                         get_translation=get_translation)
+                         get_translation=get_translation,
+                         lang=lng)
 
 
 def read_file_as_image(data) -> np.ndarray:

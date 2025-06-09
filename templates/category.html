@@ -215,12 +215,13 @@ uploadArea.addEventListener('drop', function(e) {
     }
 });
 
-function fetchSolution() {
+async function fetchSolution() {
     const disease = document.getElementById('detectedDisease').textContent;
     if (!disease) {
         alert('No disease detected.');
         return;
     }
+    var lang= "{{ lang }}";
 
 const apiUrl = "https://llm.plantvillage.psu.edu:8080/api/v2/ask?session_id=068410ed-9e80-7b6f-8000-bc069a4b0732";
 const pld = "question=" + encodeURIComponent("What is the organic and inorganic solution for " + disease + "?") + "&response_length=medium";
@@ -229,29 +230,66 @@ const solutionDiv = document.getElementById('solutionResult');
 solutionDiv.style.display = 'block';
 solutionDiv.textContent = 'Loading solution...';
 
-var xhr = new XMLHttpRequest();
-xhr.open("POST", apiUrl, true);
-xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-xhr.setRequestHeader("Access-Control-Allow-Origin", "Origin, X-Requested-With, Content-Type, Accept");
-xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                if (data && data.response) {
-                    solutionDiv.textContent = data.response;
-                } else {
-                    solutionDiv.textContent = 'No solution found.';
-                }
-            } catch (e) {
-                solutionDiv.textContent = 'Error parsing solution.';
-            }
-        } else {
-            solutionDiv.textContent = 'Error fetching solution.';
-        }
-    }
-};
-xhr.send(pld);
+// var xhr = new XMLHttpRequest();
+// xhr.open("POST", apiUrl, true);
+// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+// xhr.setRequestHeader("Access-Control-Allow-Origin", "Origin");
+// xhr.onreadystatechange = function() {
+//     if (xhr.readyState === 4) {
+//         if (xhr.status === 200) {
+//             try {
+//                 var data = JSON.parse(xhr.responseText);
+//                 if (data && data.response) {
+//                     solutionDiv.textContent = data.response;
+//                 } else {
+//                     solutionDiv.textContent = 'No solution found.';
+//                 }
+//             } catch (e) {
+//                 solutionDiv.textContent = 'Error parsing solution.';
+//             }
+//         } else {
+//             solutionDiv.textContent = 'Error fetching solution.';
+//         }
+//     }
+// };
+// xhr.send(pld);
+
+
+
+var langgen = (lang == 'ne') ? " generate the content in nepali language.":""
+
+
+const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDwImbSeV0HF7CF7BPi6evx__pdG7CjWbQ';
+
+const data = `{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "${encodeURIComponent("What is the organic and inorganic solution for " + disease.replace('_',' ') + "? suggest a proper organic(if possible) and inorganic methods to overcome it in very short. also don't include any disclaimers. generate in html formatted output instead of markdown."+langgen)}"
+          }
+        ]
+      }
+    ]
+  }`;
+
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: data,
+});
+
+const text = await response.text();
+
+console.log(JSON.parse(text));
+solutionDiv.innerHTML = JSON.parse(text).candidates[0].content.parts[0].text.replace('```html','').replace('```','');
+
+
+
+
 }
 </script>
 {% endblock %}
