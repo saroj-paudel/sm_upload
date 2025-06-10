@@ -4,49 +4,40 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h2 class="text-center mb-5">{{ get_translation('about_title') }}</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="text-center mb-4 text-success fw-bold">{{ get_translation('about_title') }}</h2>
 
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ get_translation('about_mission') }}</h5>
-                    <p class="card-text">
-                        {{ get_translation('about_mission_text') }}
-                    </p>
-                </div>
+            <div class="mb-4 p-4 rounded-3 shadow-sm bg-white border-start border-4 border-success">
+                <h5 class="fw-semibold mb-2 text-success"><i class="fas fa-bullseye me-2"></i>{{ get_translation('about_mission') }}</h5>
+                <p class="mb-0 text-muted">{{ get_translation('about_mission_text') }}</p>
             </div>
 
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ get_translation('about_technology') }}</h5>
-                    <p class="card-text">
-                        {{ get_translation('about_technology_text') }}
-                    </p>
-                </div>
+            <div class="mb-4 p-4 rounded-3 shadow-sm bg-white border-start border-4 border-info">
+                <h5 class="fw-semibold mb-2 text-info"><i class="fas fa-microchip me-2"></i>{{ get_translation('about_technology') }}</h5>
+                <p class="mb-0 text-muted">{{ get_translation('about_technology_text') }}</p>
             </div>
 
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ get_translation('plant_category') }}</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>{{ get_translation('soil_crops') }}:</strong> {{ get_translation('soil_crops_desc') }}</li>
-                        <li class="list-group-item"><strong>{{ get_translation('tree_fruits') }}:</strong> {{ get_translation('tree_fruits_desc') }}</li>
-                        <li class="list-group-item"><strong>{{ get_translation('leafy_vegetables') }}:</strong> {{ get_translation('leafy_vegetables_desc') }}</li>
-                        <li class="list-group-item"><strong>{{ get_translation('cereals') }}:</strong> {{ get_translation('cereals_desc') }}</li>
-                    </ul>
-                </div>
+            <div class="mb-4 p-4 rounded-3 shadow-sm bg-white border-start border-4 border-warning">
+                <h5 class="fw-semibold mb-3 text-warning"><i class="fas fa-leaf me-2"></i>{{ get_translation('plant_category') }}</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0 ps-0"><strong>{{ get_translation('soil_crops') }}:</strong> {{ get_translation('soil_crops_desc') }}</li>
+                    <li class="list-group-item bg-transparent border-0 ps-0"><strong>{{ get_translation('tree_fruits') }}:</strong> {{ get_translation('tree_fruits_desc') }}</li>
+                    <li class="list-group-item bg-transparent border-0 ps-0"><strong>{{ get_translation('leafy_vegetables') }}:</strong> {{ get_translation('leafy_vegetables_desc') }}</li>
+                    <li class="list-group-item bg-transparent border-0 ps-0"><strong>{{ get_translation('cereals') }}:</strong> {{ get_translation('cereals_desc') }}</li>
+                </ul>
             </div>
 
-            <div class="card shadow">
-                <div class="card-body">
-                    <h5 class="card-title">{{ get_translation('about_team') }}</h5>
-                    <p class="card-text">
-                        {{ get_translation('about_team_text') }}
-                    </p>
-                </div>
+            <div class="mb-4 p-4 rounded-3 shadow-sm bg-white border-start border-4 border-primary">
+                <h5 class="fw-semibold mb-2 text-primary"><i class="fas fa-users me-2"></i>{{ get_translation('about_team') }}</h5>
+                <p class="mb-0 text-muted">{{ get_translation('about_team_text') }}</p>
             </div>
         </div>
     </div>
 </div>
+<style>
+    .list-group-item strong {
+        color: #388e3c;
+    }
+</style>
 {% endblock %}

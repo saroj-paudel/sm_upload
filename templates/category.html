@@ -13,19 +13,19 @@
             </div>
 
             <div class="text-center mb-5">
-                <h1>{{ get_translation('disease_detection') }}</h1>
+                <h1 class="fw-bold">{{ get_translation('disease_detection') }}</h1>
                 <h3 class="text-success">{{ get_translation(category_info.name_key) }}</h3>
                 <p class="text-muted">{{ get_translation(category_info.desc_key) }}</p>
             </div>
 
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
                     <form id="diseaseDetectionForm" enctype="multipart/form-data">
                         <input type="hidden" name="category" value="{{ category_name }}">
 
                         <div class="mb-4">
-                            <label for="imageUpload" class="form-label">{{ get_translation('upload_plant_image') }}</label>
-                            <div class="upload-area border border-dashed border-success rounded p-4 text-center" id="uploadArea">
+                            <label for="imageUpload" class="form-label fw-semibold">{{ get_translation('upload_plant_image') }}</label>
+                            <div class="upload-area border border-dashed border-success rounded p-4 text-center" id="uploadArea" style="cursor:pointer;">
                                 <i class="fas fa-cloud-upload-alt fa-3x text-success mb-3"></i>
                                 <p class="mb-2">{{ get_translation('drag_drop') }}</p>
                                 <input type="file" class="form-control d-none" id="imageUpload" name="image" accept="image/*" required>
@@ -42,8 +42,8 @@
 
                         <!-- Image Preview -->
                         <div id="imagePreview" class="mb-3" style="display: none;">
-                            <div class="card">
-                                <div class="card-header">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
                                     <h6 class="mb-0">{{ get_translation('image_preview') }}</h6>
                                 </div>
                                 <div class="card-body text-center">
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success btn-lg" id="analyzeBtn">
+                            <button type="submit" class="btn btn-success btn-lg px-5" id="analyzeBtn">
                                 {{ get_translation('analyze_image') }}
                             </button>
                         </div>
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Loading state -->
-            <div id="loadingState" class="card shadow-sm mt-4" style="display: none;">
+            <div id="loadingState" class="card shadow-sm mt-4 border-0" style="display: none;">
                 <div class="card-body text-center py-5">
                     <div class="spinner-border text-success mb-3" role="status"></div>
                     <h5>{{ get_translation('analyzing') }}</h5>
@@ -70,30 +70,26 @@
             </div>
 
             <!-- Results -->
-            <div id="resultsCard" class="card shadow-sm mt-4" style="display: none;">
+            <div id="resultsCard" class="card shadow-sm mt-4 border-0" style="display: none;">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0">{{ get_translation('analysis_results') }}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="row mb-3">
+                        <div class="col-md-7 mb-2">
                             <strong>{{ get_translation('detected_disease') }}:</strong>
                             <span id="detectedDisease" class="text-success"></span>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-5 mb-2">
                             <strong>{{ get_translation('confidence') }}:</strong>
                             <span id="confidence"></span>%
                         </div>
-                        <div class="col-md-3 mb-3 d-none">
-                            <strong>{{ get_translation('severity') }}:</strong>
-                            <span id="severity"></span>
-                        </div>
                     </div>
-                    <div class="mt-4">
-                        <h6>{{ get_translation('treatment_recommendations') }}:</h6>
-                        <div id="treatment" class="alert alert-info"></div>
+                    <div>
+                        <h6 class="fw-semibold">{{ get_translation('treatment_recommendations') }}:</h6>
+                        <div id="treatment" class="alert alert-info mb-3"></div>
                     </div>
-                    <div class="text-center mt-4">
+                    <div class="text-center mt-3">
                         <button class="btn btn-outline-primary" id="solutionBtn" onclick="fetchSolution()">
                             {{ get_translation('solution') if get_translation('solution') else 'Solution' }}
                         </button>
@@ -106,20 +102,21 @@
                     </div>
                 </div>
             </div>
-
-            <div class="mt-5">
-                <h5>{{ get_translation('common_diseases') }} {{ get_translation(category_info.name_key) }}:</h5>
-                <div class="row">
-                    {% for disease in category_info.diseases %}
-                    <div class="col-md-6 mb-2">
-                        <span class="badge bg-secondary">{{ disease }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
         </div>
     </div>
 </div>
+<style>
+.upload-area {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.upload-area.border-primary {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15);
+}
+.card-header.bg-success {
+    background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%) !important;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -161,7 +158,6 @@ document.getElementById('diseaseDetectionForm').addEventListener('submit', funct
             // Show results
             document.getElementById('detectedDisease').textContent = data.prediction.disease;
             document.getElementById('confidence').textContent = Math.round(data.prediction.confidence * 100);
-            document.getElementById('severity').textContent = data.prediction.severity;
             document.getElementById('treatment').textContent = data.prediction.treatment;
             document.getElementById('resultsCard').style.display = 'block';
         } else {
@@ -223,73 +219,42 @@ async function fetchSolution() {
     }
     var lang= "{{ lang }}";
 
-const apiUrl = "https://llm.plantvillage.psu.edu:8080/api/v2/ask?session_id=068410ed-9e80-7b6f-8000-bc069a4b0732";
-const pld = "question=" + encodeURIComponent("What is the organic and inorganic solution for " + disease + "?") + "&response_length=medium";
-// Show loading state for solution
-const solutionDiv = document.getElementById('solutionResult');
-solutionDiv.style.display = 'block';
-solutionDiv.textContent = 'Loading solution...';
+    // Show loading state for solution
+    const solutionDiv = document.getElementById('solutionResult');
+    solutionDiv.style.display = 'block';
+    solutionDiv.textContent = 'Loading solution...';
 
-// var xhr = new XMLHttpRequest();
-// xhr.open("POST", apiUrl, true);
-// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-// xhr.setRequestHeader("Access-Control-Allow-Origin", "Origin");
-// xhr.onreadystatechange = function() {
-//     if (xhr.readyState === 4) {
-//         if (xhr.status === 200) {
-//             try {
-//                 var data = JSON.parse(xhr.responseText);
-//                 if (data && data.response) {
-//                     solutionDiv.textContent = data.response;
-//                 } else {
-//                     solutionDiv.textContent = 'No solution found.';
-//                 }
-//             } catch (e) {
-//                 solutionDiv.textContent = 'Error parsing solution.';
-//             }
-//         } else {
-//             solutionDiv.textContent = 'Error fetching solution.';
-//         }
-//     }
-// };
-// xhr.send(pld);
+    var langgen = (lang == 'ne') ? " generate the content in nepali language.":""
 
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDwImbSeV0HF7CF7BPi6evx__pdG7CjWbQ';
 
-
-var langgen = (lang == 'ne') ? " generate the content in nepali language.":""
-
-
-const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDwImbSeV0HF7CF7BPi6evx__pdG7CjWbQ';
-
-const data = `{
-    "contents": [
-      {
-        "parts": [
+    const data = `{
+        "contents": [
           {
-            "text": "${encodeURIComponent("What is the organic and inorganic solution for " + disease.replace('_',' ') + "? suggest a proper organic(if possible) and inorganic methods to overcome it in very short. also don't include any disclaimers. generate in html formatted output instead of markdown."+langgen)}"
+            "parts": [
+              {
+                "text": "${encodeURIComponent("What is the organic and inorganic solution for " + disease.replace('_',' ') + "? suggest a proper organic(if possible) and inorganic methods to overcome it in very short. also don't include any disclaimers. generate in html formatted output instead of markdown."+langgen)}"
+              }
+            ]
           }
         ]
-      }
-    ]
-  }`;
+      }`;
 
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: data,
+    });
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: data,
-});
+    const text = await response.text();
 
-const text = await response.text();
-
-console.log(JSON.parse(text));
-solutionDiv.innerHTML = JSON.parse(text).candidates[0].content.parts[0].text.replace('```html','').replace('```','');
-
-
-
-
+    try {
+        solutionDiv.innerHTML = JSON.parse(text).candidates[0].content.parts[0].text.replace('```html','').replace('```','');
+    } catch (e) {
+        solutionDiv.textContent = 'No solution found.';
+    }
 }
 </script>
 {% endblock %}

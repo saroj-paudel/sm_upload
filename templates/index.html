@@ -1,76 +1,129 @@
-
 {% extends "base.html" %}
 
 {% block content %}
-<div class="hero-section bg-success text-white py-5">
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-4">{{ get_translation('title') }}</h1>
-        <p class="lead mb-4">{{ get_translation('subtitle') }}</p>
-        <p class="mb-4">{{ get_translation('description') }}</p>
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center justify-content-center" style="min-height: 60vh; background: linear-gradient(120deg, #43cea2 0%, #185a9d 100%);">
+    <div class="container text-center text-white py-5">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SmartKishan Logo" width="80" height="80" class="mb-4 shadow rounded-circle p-2">
+        <h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 8px #185a9d99;">{{ get_translation('title') }}</h1>
+        <p class="lead mb-3 fs-4">{{ get_translation('subtitle') }}</p>
+        <!-- <p class="mb-4 fs-5">{{ get_translation('description') }}</p> -->
+        <a href="#categories" class="btn btn-lg btn-light text-success fw-bold shadow-sm px-5 py-3 rounded-pill">
+            <i class="fas fa-search me-2"></i>{{ get_translation('detect_diseases') }}
+        </a>
     </div>
-</div>
+</section>
 
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h2 class="text-center mb-5">{{ get_translation('select_category') }}</h2>
-            <div class="row g-4">
-                {% for category_id, category_info in categories.items() %}
-                <div class="col-md-6">
-                    <div class="card h-100 shadow-sm category-card">
-                        <div class="card-body text-center">
-                            <div class="category-icon mb-3">
-                                {% if category_id == 'soil_crops' %}
-                                    <i class="fas fa-seedling fa-3x text-success"></i>
-                                {% elif category_id == 'tree_fruits' %}
-                                    <i class="fas fa-tree fa-3x text-success"></i>
-                                {% elif category_id == 'leafy_vegetables' %}
-                                    <i class="fas fa-leaf fa-3x text-success"></i>
-                                {% else %}
-                                    <i class="fas fa-wheat-awn fa-3x text-success"></i>
-                                {% endif %}
-                            </div>
-                            <h5 class="card-title">{{ get_translation(category_info.name_key) }}</h5>
-                            <p class="card-text">{{ get_translation(category_info.desc_key) }}</p>
-                            <a href="{{ url_for('category_page', category_name=category_id) }}" 
-                               class="btn btn-success">{{ get_translation('detect_diseases') }}</a>
+<!-- Categories Section -->
+<section id="categories" class="py-5" style="background: #f8fafc;">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold text-success">{{ get_translation('select_category') }}</h2>
+        <div class="row g-4 justify-content-center">
+            {% for category_id, category_info in categories.items() %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow border-0 category-card transition-hover">
+                    <div class="card-body text-center">
+                        <div class="category-icon mb-3">
+                            {% if category_id == 'soil_crops' %}
+                                <i class="fas fa-seedling fa-3x text-success"></i>
+                            {% elif category_id == 'tree_fruits' %}
+                                <i class="fas fa-tree fa-3x text-success"></i>
+                            {% elif category_id == 'leafy_vegetables' %}
+                                <i class="fas fa-leaf fa-3x text-success"></i>
+                            {% else %}
+                                <i class="fas fa-wheat-awn fa-3x text-success"></i>
+                            {% endif %}
                         </div>
+                        <h5 class="card-title fw-bold">{{ get_translation(category_info.name_key) }}</h5>
+                        <p class="card-text text-muted">{{ get_translation(category_info.desc_key) }}</p>
+                        <a href="{{ url_for('category_page', category_name=category_id) }}" 
+                           class="btn btn-outline-success rounded-pill px-4 mt-2">{{ get_translation('detect_diseases') }}</a>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </div>
-</div>
+</section>
 
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-10 mx-auto">
-            <h2 class="text-center mb-5">{{ get_translation('how_it_works') }}</h2>
-            <div class="row g-4">
-                <div class="col-md-4 text-center">
-                    <div class="step-icon mb-3">
-                        <i class="fas fa-upload fa-3x text-success"></i>
-                    </div>
-                    <h5>{{ get_translation('upload_image') }}</h5>
-                    <p>{{ get_translation('upload_desc') }}</p>
+<!-- How It Works Section -->
+<section class="py-5" style="background: linear-gradient(120deg, #e0f7fa 0%, #e8f5e9 100%);">
+    <div class="container">
+        <div class="position-relative mb-5 text-center">
+            <span class="splash-bg position-absolute top-50 start-50 translate-middle"></span>
+            <h2 class="fw-bold text-success position-relative" style="z-index:2;">{{ get_translation('how_it_works') }}</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 text-center">
+                <div class="step-icon mb-3 bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width:80px; height:80px;">
+                    <i class="fas fa-upload fa-2x text-success"></i>
                 </div>
-                <div class="col-md-4 text-center">
-                    <div class="step-icon mb-3">
-                        <i class="fas fa-brain fa-3x text-success"></i>
-                    </div>
-                    <h5>{{ get_translation('ai_analysis') }}</h5>
-                    <p>{{ get_translation('ai_desc') }}</p>
+                <h5 class="fw-bold mt-3">{{ get_translation('upload_image') }}</h5>
+                <p class="text-muted">{{ get_translation('upload_desc') }}</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="step-icon mb-3 bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width:80px; height:80px;">
+                    <i class="fas fa-brain fa-2x text-success"></i>
                 </div>
-                <div class="col-md-4 text-center">
-                    <div class="step-icon mb-3">
-                        <i class="fas fa-prescription-bottle-medical fa-3x text-success"></i>
-                    </div>
-                    <h5>{{ get_translation('get_treatment') }}</h5>
-                    <p>{{ get_translation('treatment_desc') }}</p>
+                <h5 class="fw-bold mt-3">{{ get_translation('ai_analysis') }}</h5>
+                <p class="text-muted">{{ get_translation('ai_desc') }}</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="step-icon mb-3 bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width:80px; height:80px;">
+                    <i class="fas fa-prescription-bottle-medical fa-2x text-success"></i>
                 </div>
+                <h5 class="fw-bold mt-3">{{ get_translation('get_treatment') }}</h5>
+                <p class="text-muted">{{ get_translation('treatment_desc') }}</p>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<style>
+/* Extra UI polish */
+section{
+    height: 100vh;
+}
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("{{ url_for('static', filename='images/farmers.jpg') }}") center/cover no-repeat;
+    opacity: 0.08;
+    z-index: 0;
+}
+.hero-section > .container {
+    position: relative;
+    z-index: 1;
+}
+.category-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.category-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(56, 142, 60, 0.15);
+}
+.splash-bg {
+    width: 420px;
+    height: 150px;
+    background: url("{{ url_for('static',filename='images/splash.png')}}") no-repeat center/contain;
+    opacity: 0.25;
+    z-index: 1;
+    pointer-events: none;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(5);
+        display: inline-block;
+}
+@media (max-width: 576px) {
+    .splash-bg {
+        width: 140px;
+        height: 60px;
+    }
+}
+</style>
 {% endblock %}

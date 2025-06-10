@@ -2,88 +2,91 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
             <div class="text-center mb-5">
-                <h1>{{ get_translation('contribute_title') }}</h1>
+                <h1 class="fw-bold text-success">{{ get_translation('contribute_title') }}</h1>
                 <p class="lead">{{ get_translation('contribute_description') }}</p>
             </div>
-
-            <div class="row mb-5">
-                <div class="col-md-6">
-                    <div class="card h-100 shadow-sm">
+            <div class="row g-4 align-items-start">
+                <!-- Form Left -->
+                <div class="col-md-7">
+                    <div class="card shadow-sm border-0">
                         <div class="card-body">
-                            <h5 class="card-title text-success">{{ get_translation('contribute_why') }}</h5>
-                            <p class="card-text">{{ get_translation('contribute_why_text') }}</p>
+                            <form id="contributionForm" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="categorySelect" class="form-label">{{ get_translation('plant_category') }} *</label>
+                                        <select class="form-select" id="categorySelect" name="category" required>
+                                            <option value="">{{ get_translation('select_plant_category') }}</option>
+                                            {% for category_id, category_info in categories.items() %}
+                                            <option value="{{ category_id }}">{{ get_translation(category_info.name_key) }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="diseaseInput" class="form-label">{{ get_translation('disease_name') }} *</label>
+                                        <input type="text" class="form-control" id="diseaseInput" name="disease" 
+                                               placeholder="{{ get_translation('enter_disease_name') }}" required>
+                                        <div class="form-text">{{ get_translation('be_specific') }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="imageUpload" class="form-label">{{ get_translation('upload_plant_image') }} *</label>
+                                    <input type="file" class="form-control" id="imageUpload" name="image" 
+                                           accept="image/*" required>
+                                    <div class="form-text">{{ get_translation('supported_formats') }}</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="contributorName" class="form-label">{{ get_translation('contributor_name') }}</label>
+                                    <input type="text" class="form-control" id="contributorName" name="contributor_name" 
+                                           placeholder="{{ get_translation('enter_your_name') }}">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="notes" class="form-label">{{ get_translation('additional_notes') }}</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                              placeholder="{{ get_translation('additional_notes_placeholder') }}"></textarea>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success btn-lg w-100">
+                                        {{ get_translation('submit_contribution') }}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
+                    <!-- Success/Error Messages -->
+                    <div id="alertContainer" class="mt-4"></div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card h-100 shadow-sm">
+                <!-- Guidelines Right -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm border-0 h-100">
                         <div class="card-body">
-                            <h5 class="card-title text-success">{{ get_translation('contribute_guidelines') }}</h5>
-                            <div class="card-text">
-                                <p>{{ get_translation('contribute_guideline_1') }}</p>
-                                <p>{{ get_translation('contribute_guideline_2') }}</p>
-                                <p>{{ get_translation('contribute_guideline_3') }}</p>
-                                <p>{{ get_translation('contribute_guideline_4') }}</p>
-                            </div>
+                            <h5 class="card-title text-success mb-3">
+                                <i class="fas fa-lightbulb me-2"></i>{{ get_translation('contribute_guidelines') }}
+                            </h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item bg-transparent border-0 ps-0">
+                                    {{ get_translation('contribute_guideline_1') }}
+                                </li>
+                                <li class="list-group-item bg-transparent border-0 ps-0">
+                                    {{ get_translation('contribute_guideline_2') }}
+                                </li>
+                                <li class="list-group-item bg-transparent border-0 ps-0">
+                                    {{ get_translation('contribute_guideline_3') }}
+                                </li>
+                                <li class="list-group-item bg-transparent border-0 ps-0">
+                                    {{ get_translation('contribute_guideline_4') }}
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form id="contributionForm" enctype="multipart/form-data">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="categorySelect" class="form-label">{{ get_translation('plant_category') }} *</label>
-                                <select class="form-select" id="categorySelect" name="category" required>
-                                    <option value="">{{ get_translation('select_plant_category') }}</option>
-                                    {% for category_id, category_info in categories.items() %}
-                                    <option value="{{ category_id }}">{{ get_translation(category_info.name_key) }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="diseaseInput" class="form-label">{{ get_translation('disease_name') }} *</label>
-                                <input type="text" class="form-control" id="diseaseInput" name="disease" 
-                                       placeholder="{{ get_translation('enter_disease_name') }}" required>
-                                <div class="form-text">{{ get_translation('be_specific') }}</div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="imageUpload" class="form-label">{{ get_translation('upload_plant_image') }} *</label>
-                            <input type="file" class="form-control" id="imageUpload" name="image" 
-                                   accept="image/*" required>
-                            <div class="form-text">{{ get_translation('supported_formats') }}</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="contributorName" class="form-label">{{ get_translation('contributor_name') }}</label>
-                            <input type="text" class="form-control" id="contributorName" name="contributor_name" 
-                                   placeholder="{{ get_translation('enter_your_name') }}">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="notes" class="form-label">{{ get_translation('additional_notes') }}</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3" 
-                                      placeholder="{{ get_translation('additional_notes_placeholder') }}"></textarea>
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                {{ get_translation('submit_contribution') }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Success/Error Messages -->
-            <div id="alertContainer" class="mt-4"></div>
         </div>
     </div>
 </div>

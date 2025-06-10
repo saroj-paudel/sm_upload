@@ -153,6 +153,7 @@ TRANSLATIONS = {
         'leafy_vegetables_desc': 'पातेदार बालीहरू जस्तै सलाद, पालुंगो, आदि।',
         'cereals': 'अनाजहरू',
         'cereals_desc': 'अनाजका बालीहरू जस्तै गहुँ, चामल, मकै, आदि।',
+        'solution':'समाधान',
 
         # About page translations
         'about_title': 'स्मार्टकिशानको बारेमा',
@@ -222,6 +223,8 @@ TRANSLATIONS = {
         'Smut': 'कालो धूलो',
         'Blight': 'झुलसाउने',
         'Leaf Spot': 'पातको दाग',
+        'Healthy':'स्वास्थ्य',
+        'Common Rust':'सामान्य खिया',
 
         # Severity levels in Nepali
         'Mild': 'हल्का',
@@ -340,35 +343,35 @@ def mock_disease_detection(image, category):
         # load my model here
     model = load_model('models/soil_crops.keras')
 
-    clss= ['Potato___Early_blight',
-    'Potato___Late_blight',
-    'Potato___healthy',
-    'Tomato___Bacterial_spot',
-    'Tomato___Early_blight',
-    'Tomato___Late_blight',
-    'Tomato___Leaf_Mold',
-    'Tomato___healthy']
+    clss= ['Early Blight',
+    'Late Blight',
+    'Healthy',
+    'Bacterial Spot',
+    'Early Blight',
+    'Late Blight',
+    'Leaf Mold',
+    'Healthy']
 
 
     if category == "cereals":
         model = load_model('models/cereals_crops.keras')
-        clss = ['Corn___Common_Rust',
- 'Corn___Gray_Leaf_Spot',
- 'Corn___Healthy',
- 'Corn___Northern_Leaf_Blight',
- 'Rice___Brown_Spot',
- 'Rice___Healthy',
- 'Rice___Leaf_Blast',
- 'Wheat___Brown_Rust',
- 'Wheat___Healthy',
- 'Wheat___Yellow_Rust']
+        clss = ['Common Rust',
+ 'Gray Leaf Spot',
+ 'Healthy',
+ 'Northern Leaf Blight',
+ 'Brown Spot',
+ 'Healthy',
+ 'Leaf Blast',
+ 'Brown Rust',
+ 'Healthy',
+ 'Yellow Rust']
         
     elif category == "tree_fruits":
         model = load_model('models/tree_crops.keras')
-        clss = ['Apple___Apple_scab',
- 'Apple___Black_rot',
- 'Apple___Cedar_apple_rust',
- 'Apple___healthy']
+        clss = ['AppleApple_scab',
+ 'AppleBlack_rot',
+ 'AppleCedar_apple_rust',
+ 'Applehealthy']
     elif category == "leafy_vegetables":
         model = load_model('models/leafy_crops.keras')
         clss = ['Bacterial',
