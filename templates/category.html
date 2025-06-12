@@ -226,7 +226,7 @@ async function fetchSolution() {
 
     var langgen = (lang == 'ne') ? " generate the content in nepali language.":""
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDwImbSeV0HF7CF7BPi6evx__pdG7CjWbQ';
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={{ api_key }}';
 
     const data = `{
         "contents": [

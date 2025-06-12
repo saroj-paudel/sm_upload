@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
-import os
 import base64
 from io import BytesIO
 from PIL import Image
@@ -7,6 +6,15 @@ import numpy as np
 from tensorflow.keras.models import load_model
 import matplotlib.image as img
 import random
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+
+
+
 app = Flask(__name__)
 
 app.secret_key = 'keepItSecrete'  # Required for sessions
@@ -291,7 +299,7 @@ def category_page(category_name):
                          category_name=category_name, 
                          category_info=category_info,
                          get_translation=get_translation,
-                         lang=lng)
+                         lang=lng,api_key=os.getenv("API_KEY"))
 
 
 def read_file_as_image(data) -> np.ndarray:
